@@ -25,8 +25,10 @@ docker logs tf
 
 ## Optional
 
-You can execute `tensorboard`:
+- You can execute `tensorboard`:
 
 ```bash
-docker exec -d tf tensorboard --logdir=<log_dir>
+docker exec -d tf tensorboard --logdir=./logs
 ```
+
+- Browse http://localhost:6006
