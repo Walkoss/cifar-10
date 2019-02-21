@@ -14,7 +14,9 @@ class LinearModel(BaseModel):
         )
 
         model.compile(
-            optimizer=tf.keras.optimizers.SGD(lr=params["lr"], momentum=params["momentum"]),
+            optimizer=tf.keras.optimizers.SGD(
+                lr=params["lr"], momentum=params["momentum"]
+            ),
             loss="sparse_categorical_crossentropy",
             metrics=["accuracy"],
         )
@@ -28,8 +30,9 @@ class LinearModel(BaseModel):
             verbose=1,
             callbacks=[
                 tf.keras.callbacks.TensorBoard(
-                    params["logdir"]
-                    + ">oa={output_activation}_lr={lr}_bs={batch_size}".format(**params)
+                    "./logs/"
+                    + "linear_default/"
+                    + "_".join("=".join((str(k), str(v))) for k, v in params.items())
                 )
             ],
         )

@@ -1,5 +1,4 @@
 import argparse
-import os
 import talos as ta
 import tensorflow as tf
 
@@ -52,11 +51,6 @@ def main():
     x_train, x_test = x_train / 255.0, x_test / 255.0
 
     params = {
-        "logdir": [
-            os.path.join(
-                os.path.dirname(os.path.realpath(__file__)), "logs", experiment
-            )
-        ],
         "output_activation": args.output_activation,
         "lr": args.lr,
         "momentum": args.momentum,
