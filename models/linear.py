@@ -24,11 +24,12 @@ class LinearModel(BaseModel):
             y_train,
             validation_data=(x_val, y_val),
             epochs=params["epochs"],
+            batch_size=params["batch_size"],
             verbose=1,
             callbacks=[
                 tf.keras.callbacks.TensorBoard(
                     params["logdir"]
-                    + ">oa={output_activation}_lr={lr}".format(**params)
+                    + ">oa={output_activation}_lr={lr}_bs={batch_size}".format(**params)
                 )
             ],
         )

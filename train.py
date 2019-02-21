@@ -22,6 +22,9 @@ def main():
     parser.add_argument("--epochs", nargs="+", type=int, default=[DEFAULT_EPOCHS])
     parser.add_argument("--lr", nargs="+", type=float, default=[DEFAULT_LEARNING_RATE])
     parser.add_argument(
+        "--batch-size", nargs="+", type=int, default=[DEFAULT_BATCH_SIZE]
+    )
+    parser.add_argument(
         "--activation",
         nargs="+",
         type=str,
@@ -54,7 +57,8 @@ def main():
         ],
         "output_activation": args.output_activation,
         "lr": args.lr,
-        "epochs": args.epochs
+        "epochs": args.epochs,
+        "batch_size": args.batch_size,
     }
 
     ta.Scan(
