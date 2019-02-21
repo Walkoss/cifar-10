@@ -2,6 +2,7 @@ import argparse
 import talos as ta
 import tensorflow as tf
 
+from models.cnn import CNN
 from models.linear import LinearModel
 from models.mlp import MLPModel
 
@@ -15,8 +16,11 @@ DEFAULT_ACTIVATION_FUNCTION = "relu"
 DEFAULT_OUTPUT_ACTIVATION_FUNCTION = "softmax"
 DEFAULT_EPOCHS = 50
 DEFAULT_BATCH_SIZE = 32
+DEFAULT_LAYERS = 2
+DEFAULT_FILTERS = 32
+DEFAULT_STRIDES = 3
 
-MODELS = {"linear": LinearModel, "mlp": MLPModel}
+MODELS = {"linear": LinearModel, "mlp": MLPModel, "cnn": CNN}
 ALLOWED_ACTIVATIONS = ["softmax", "sigmoid", "tanh", "relu"]
 
 
@@ -57,6 +61,9 @@ def main():
     parser.add_argument(
         "--batch-size", nargs="+", type=int, default=[DEFAULT_BATCH_SIZE]
     )
+    parser.add_argument("--layers", nargs="+", type=int, default=[DEFAULT_LAYERS])
+    parser.add_argument("--filters", nargs="+", type=int, default=[DEFAULT_FILTERS])
+    parser.add_argument("--strides", nargs="+", type=int, default=[DEFAULT_STRIDES])
 
     args = parser.parse_args()
 
@@ -79,6 +86,9 @@ def main():
         "output_activation": args.output_activation,
         "epochs": args.epochs,
         "batch_size": args.batch_size,
+        "layers": args.layers,
+        "filters": args.filters,
+        "strides": args.strides
     }
 
     ta.Scan(
