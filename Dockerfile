@@ -5,7 +5,7 @@ RUN pip install \
         talos
 
 # talos include tensorflow remove the following lines for cpu usage
-RUN pip uninstall \
+RUN pip uninstall -y \
         tensorflow \
         tensorflow-gpu
 
