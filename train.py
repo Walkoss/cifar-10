@@ -3,15 +3,21 @@ import talos as ta
 import tensorflow as tf
 
 from models.linear import LinearModel
+from models.mlp import MLPModel
 
-DEFAULT_EPOCHS = 50
-DEFAULT_BATCH_SIZE = 32
 DEFAULT_LEARNING_RATE = 0.01
 DEFAULT_MOMENTUM = 0.9
-DEFAULT_ACTIVATION_FUNCTION = "sigmoid"
+DEFAULT_BATCH_NORM = 0
+DEFAULT_DROPOUT = 0
+DEFAULT_UNIT = 32
+DEFAULT_HIDDEN_LAYERS = 1
+DEFAULT_ACTIVATION_FUNCTION = "relu"
 DEFAULT_OUTPUT_ACTIVATION_FUNCTION = "softmax"
+DEFAULT_EPOCHS = 50
+DEFAULT_BATCH_SIZE = 32
 
-MODELS = {"linear": LinearModel}
+MODELS = {"linear": LinearModel, "mlp": MLPModel}
+ALLOWED_ACTIVATIONS = ["softmax", "sigmoid", "tanh", "relu"]
 
 
 def main():
@@ -19,25 +25,37 @@ def main():
 
     parser.add_argument("--model", required=True)
     parser.add_argument("--variant", default="default")
-    parser.add_argument("--epochs", nargs="+", type=int, default=[DEFAULT_EPOCHS])
     parser.add_argument("--lr", nargs="+", type=float, default=[DEFAULT_LEARNING_RATE])
     parser.add_argument("--momentum", nargs="+", type=float, default=[DEFAULT_MOMENTUM])
     parser.add_argument(
-        "--batch-size", nargs="+", type=int, default=[DEFAULT_BATCH_SIZE]
+        "--batch-norm",
+        nargs="+",
+        type=int,
+        default=[DEFAULT_BATCH_NORM],
+        choices=[0, 1],
+    )
+    parser.add_argument("--dropout", nargs="+", type=float, default=[DEFAULT_DROPOUT])
+    parser.add_argument("--units", nargs="+", type=int, default=[DEFAULT_UNIT])
+    parser.add_argument(
+        "--hidden-layers", nargs="+", type=int, default=[DEFAULT_HIDDEN_LAYERS]
     )
     parser.add_argument(
         "--activation",
         nargs="+",
         type=str,
         default=[DEFAULT_ACTIVATION_FUNCTION],
-        choices=["sigmoid", "tanh", "relu"],
+        choices=ALLOWED_ACTIVATIONS,
     )
     parser.add_argument(
         "--output-activation",
         nargs="+",
         type=str,
         default=[DEFAULT_OUTPUT_ACTIVATION_FUNCTION],
-        choices=["sigmoid", "softmax"],
+        choices=ALLOWED_ACTIVATIONS,
+    )
+    parser.add_argument("--epochs", nargs="+", type=int, default=[DEFAULT_EPOCHS])
+    parser.add_argument(
+        "--batch-size", nargs="+", type=int, default=[DEFAULT_BATCH_SIZE]
     )
 
     args = parser.parse_args()
@@ -51,9 +69,14 @@ def main():
     x_train, x_test = x_train / 255.0, x_test / 255.0
 
     params = {
-        "output_activation": args.output_activation,
         "lr": args.lr,
         "momentum": args.momentum,
+        "units": args.units,
+        "hidden_layers": args.hidden_layers,
+        "dropout": args.dropout,
+        "batch_norm": args.batch_norm,
+        "activation": args.activation,
+        "output_activation": args.output_activation,
         "epochs": args.epochs,
         "batch_size": args.batch_size,
     }
