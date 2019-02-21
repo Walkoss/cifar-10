@@ -1,8 +1,9 @@
-FROM tensorflow/tensorflow:latest-gpu-py3-jupyter
+FROM tensorflow/tensorflow:latest-gpu-py3
 
-RUN pip install \
-        comet_ml \
-        jupyterlab \
-        talos
+RUN pip install talos
 
-CMD ["bash", "-c", "source /etc/bash.bashrc && jupyter lab --notebook-dir=/tf --ip 0.0.0.0 --no-browser --allow-root"]
+RUN pip uninstall -y \
+        tensorflow \
+        tensorflow-gpu
+
+RUN pip install tensorflow-gpu==1.13.0rc1
