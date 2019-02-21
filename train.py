@@ -1,4 +1,5 @@
 import argparse
+import os
 import talos as ta
 import tensorflow as tf
 
@@ -39,20 +40,31 @@ def main():
 
     assert args.model in MODELS, "Model '{}' doesn't exist".format(args.model)
     model = MODELS[args.model].variant(args.variant)
+    experiment = "{}_{}".format(args.model, args.variant)
 
     cifar10 = tf.keras.datasets.cifar10
     (x_train, y_train), (x_test, y_test) = cifar10.load_data()
     x_train, x_test = x_train / 255.0, x_test / 255.0
 
-    params = {"output_activation": args.output_activation, "lr": args.lr}
+    params = {
+        "logdir": [
+            os.path.join(
+                os.path.dirname(os.path.realpath(__file__)), "logs", experiment
+            )
+        ],
+        "output_activation": args.output_activation,
+        "lr": args.lr,
+    }
 
-    t = ta.Scan(
+    ta.Scan(
         x=x_train,
         y=y_train,
         x_val=x_train,
         y_val=y_train,
         model=model,
         params=params,
+        dataset_name="cifar-10",
+        experiment_no=experiment,
         clear_tf_session=False,
     )
 

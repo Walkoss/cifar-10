@@ -19,6 +19,18 @@ class LinearModel(BaseModel):
             metrics=["accuracy"],
         )
 
-        history = model.fit(x_train, y_train, validation_data=(x_val, y_val), epochs=1, verbose=0)
+        history = model.fit(
+            x_train,
+            y_train,
+            validation_data=(x_val, y_val),
+            epochs=10,
+            verbose=0,
+            callbacks=[
+                tf.keras.callbacks.TensorBoard(
+                    params["logdir"]
+                    + ">oa={output_activation}_lr={lr}".format(**params)
+                )
+            ],
+        )
 
         return history, model
