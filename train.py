@@ -54,6 +54,7 @@ def main():
         ],
         "output_activation": args.output_activation,
         "lr": args.lr,
+        "epochs": args.epochs
     }
 
     ta.Scan(

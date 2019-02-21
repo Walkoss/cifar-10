@@ -23,8 +23,8 @@ class LinearModel(BaseModel):
             x_train,
             y_train,
             validation_data=(x_val, y_val),
-            epochs=10,
-            verbose=0,
+            epochs=params["epochs"],
+            verbose=1,
             callbacks=[
                 tf.keras.callbacks.TensorBoard(
                     params["logdir"]
