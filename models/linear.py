@@ -1,3 +1,4 @@
+import time
 import tensorflow as tf
 
 from models import BaseModel
@@ -33,6 +34,7 @@ class LinearModel(BaseModel):
                     "./logs/"
                     + "linear_default/"
                     + "_".join("=".join((str(k), str(v))) for k, v in params.items())
+                    + "_ts={}".format(str(time.time()))
                 )
             ],
         )
