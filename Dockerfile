@@ -7,5 +7,5 @@ RUN pip uninstall -y \
         tensorflow \
         tensorflow-gpu
 
-RUN pip install tensorflow-gpu
+RUN pip install tensorflow-gpu==1.13.0rc1
 # <===> #
