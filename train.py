@@ -8,6 +8,7 @@ from models.linear import LinearModel
 DEFAULT_EPOCHS = 50
 DEFAULT_BATCH_SIZE = 32
 DEFAULT_LEARNING_RATE = 0.01
+DEFAULT_MOMENTUM = 0.9
 DEFAULT_ACTIVATION_FUNCTION = "sigmoid"
 DEFAULT_OUTPUT_ACTIVATION_FUNCTION = "softmax"
 
@@ -21,6 +22,7 @@ def main():
     parser.add_argument("--variant", default="default")
     parser.add_argument("--epochs", nargs="+", type=int, default=[DEFAULT_EPOCHS])
     parser.add_argument("--lr", nargs="+", type=float, default=[DEFAULT_LEARNING_RATE])
+    parser.add_argument("--momentum", nargs="+", type=float, default=[DEFAULT_MOMENTUM])
     parser.add_argument(
         "--batch-size", nargs="+", type=int, default=[DEFAULT_BATCH_SIZE]
     )
@@ -57,6 +59,7 @@ def main():
         ],
         "output_activation": args.output_activation,
         "lr": args.lr,
+        "momentum": args.momentum,
         "epochs": args.epochs,
         "batch_size": args.batch_size,
     }

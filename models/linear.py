@@ -14,7 +14,7 @@ class LinearModel(BaseModel):
         )
 
         model.compile(
-            optimizer=tf.keras.optimizers.SGD(lr=params["lr"]),
+            optimizer=tf.keras.optimizers.SGD(lr=params["lr"], momentum=params["momentum"]),
             loss="sparse_categorical_crossentropy",
             metrics=["accuracy"],
         )
