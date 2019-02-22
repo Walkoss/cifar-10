@@ -1,46 +1,73 @@
 import time
 import tensorflow as tf
+
 from tensorflow.keras.layers import MaxPooling2D
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, Dropout, Activation
+from tensorflow.keras.layers import Dense, Dropout
 from tensorflow.keras.layers import Conv2D
-from tensorflow.keras.optimizers import SGD
 from tensorflow.keras.layers import Flatten
+
 from models import BaseModel
 
 
-class CNN(BaseModel):
+class CNNModel(BaseModel):
     @classmethod
     def variant_default(cls, x_train, y_train, x_val, y_val, params):
         model = Sequential()
-        model.add(Conv2D(params["filters"], (params["strides"], params["strides"]),
-                         padding="same", input_shape=x_train.shape[1:]))
-        model.add(Activation(params["activation"]))
+        model.add(
+            Conv2D(
+                params["filters"],
+                (params["kernel_size"], params["kernel_size"]),
+                padding="same",
+                activation=params["activation"],
+                input_shape=x_train.shape[1:],
+            )
+        )
 
-        for i in range(params["layers"]):
-            model.add(Conv2D(params["filters"], (params["strides"], params["strides"])))
-            model.add(Activation(params["activation"]))
-            if i != 0 and i % 2 == 0:
-                model.add(MaxPooling2D(pool_size=(2, 2)))
-                if params["dropout"] > 0:
-                    model.add(Dropout(params["dropout"]))
+        for i in range(params["conv_modules"]):
+            model.add(
+                Conv2D(
+                    params["filters"],
+                    (params["kernel_size"], params["kernel_size"]),
+                    padding="same",
+                    activation=params["activation"],
+                )
+            )
+            model.add(MaxPooling2D())
+            if params["dropout"] > 0:
+                model.add(Dropout(params["dropout"]))
 
         model.add(Flatten())
-        model.add(Dense(512))
-        model.add(Activation(params["activation"]))
-        model.add(Dropout(params["dropout"]))
-        model.add(Dense(10))
-        model.add(Activation(params["output_activation"]))
+        for i in range(params["hidden_layers"]):
+            model.add(
+                tf.keras.layers.Dense(params["units"], activation=params["activation"])
+            )
 
-        sgd = SGD(lr=params["lr"], decay=1e-6, nesterov=True)
-        model.compile(loss='sparse_categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])
+            if params["batch_norm"] > 0:
+                model.add(tf.keras.layers.BatchNormalization())
+
+            if params["dropout"] > 0:
+                model.add(tf.keras.layers.Dropout(params["dropout"]))
+
+        model.add(Dense(10, activation=params["output_activation"]))
+
+        model.compile(
+            optimizer=tf.keras.optimizers.SGD(
+                lr=params["lr"], momentum=params["momentum"]
+            ),
+            loss="sparse_categorical_crossentropy",
+            metrics=["accuracy"],
+        )
+
+        print(model.summary())
+
         history = model.fit(
             x_train,
             y_train,
-            batch_size=params["batch_size"],
+            validation_data=(x_val, y_val),
             epochs=params["epochs"],
-            validation_data=(x_val,y_val),
-            shuffle=True,
+            batch_size=params["batch_size"],
+            verbose=1,
             callbacks=[
                 tf.keras.callbacks.TensorBoard(
                     "./logs/"
@@ -48,7 +75,7 @@ class CNN(BaseModel):
                     + "-".join("=".join((str(k), str(v))) for k, v in params.items())
                     + "-ts={}".format(str(time.time()))
                 )
-            ]
+            ],
         )
 
         return history, model
