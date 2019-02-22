@@ -110,8 +110,8 @@ def main():
     ta.Scan(
         x=x_train,
         y=y_train,
-        x_val=x_train,
-        y_val=y_train,
+        x_val=x_test,
+        y_val=y_test,
         model=model,
         params=params,
         dataset_name="cifar-10",
