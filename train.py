@@ -82,18 +82,30 @@ def main():
     params = {
         "lr": args.lr,
         "momentum": args.momentum,
-        "units": args.units,
-        "hidden_layers": args.hidden_layers,
-        "dropout": args.dropout,
-        "batch_norm": args.batch_norm,
         "activation": args.activation,
         "output_activation": args.output_activation,
         "epochs": args.epochs,
         "batch_size": args.batch_size,
-        "conv_modules": args.conv_modules,
-        "filters": args.filters,
-        "kernel_size": args.kernel_size,
     }
+
+    if args.model == "mlp" or args.model == "cnn":
+        params.update(
+            {
+                "units": args.units,
+                "hidden_layers": args.hidden_layers,
+                "dropout": args.dropout,
+                "batch_norm": args.batch_norm,
+            }
+        )
+
+        if args.model == "cnn":
+            params.update(
+                {
+                    "conv_modules": args.conv_modules,
+                    "filters": args.filters,
+                    "kernel_size": args.kernel_size,
+                }
+            )
 
     ta.Scan(
         x=x_train,
