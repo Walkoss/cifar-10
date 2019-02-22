@@ -59,8 +59,6 @@ class CNNModel(BaseModel):
             metrics=["accuracy"],
         )
 
-        print(model.summary())
-
         history = model.fit(
             x_train,
             y_train,
