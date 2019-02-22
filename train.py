@@ -5,6 +5,7 @@ import tensorflow as tf
 from models.cnn import CNNModel
 from models.linear import LinearModel
 from models.mlp import MLPModel
+from models.rnn import RNNModel
 
 DEFAULT_LEARNING_RATE = 0.01
 DEFAULT_MOMENTUM = 0.9
@@ -20,7 +21,7 @@ DEFAULT_CONV_MODULES = 2
 DEFAULT_FILTERS = 32
 DEFAULT_KERNEL_SIZE = 3
 
-MODELS = {"linear": LinearModel, "mlp": MLPModel, "cnn": CNNModel}
+MODELS = {"linear": LinearModel, "mlp": MLPModel, "cnn": CNNModel, "rnn": RNNModel}
 ALLOWED_ACTIVATIONS = ["softmax", "sigmoid", "tanh", "relu"]
 
 
@@ -88,7 +89,7 @@ def main():
         "batch_size": args.batch_size,
     }
 
-    if args.model == "mlp" or args.model == "cnn":
+    if args.model == "mlp" or args.model == "cnn" or args.model == "rnn":
         params.update(
             {
                 "units": args.units,
