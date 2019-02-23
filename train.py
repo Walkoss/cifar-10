@@ -1,9 +1,12 @@
 import argparse
+
 import talos as ta
 import tensorflow as tf
+from tensorflow.keras.utils import to_categorical
 
 from models.cnn import CNNModel
 from models.linear import LinearModel
+from models.lstm import LSTMModel
 from models.mlp import MLPModel
 
 DEFAULT_LEARNING_RATE = 0.01
@@ -19,8 +22,10 @@ DEFAULT_BATCH_SIZE = 32
 DEFAULT_CONV_MODULES = 2
 DEFAULT_FILTERS = 32
 DEFAULT_KERNEL_SIZE = 3
+DEFAULT_LSTM_LAYERS = 2
+DEFAULT_HIDDEN_SIZE = 32
 
-MODELS = {"linear": LinearModel, "mlp": MLPModel, "cnn": CNNModel}
+MODELS = {"linear": LinearModel, "mlp": MLPModel, "cnn": CNNModel, "lstm": LSTMModel}
 ALLOWED_ACTIVATIONS = ["softmax", "sigmoid", "tanh", "relu"]
 
 
@@ -32,7 +37,7 @@ def main():
     parser.add_argument("--lr", nargs="+", type=float, default=[DEFAULT_LEARNING_RATE])
     parser.add_argument("--momentum", nargs="+", type=float, default=[DEFAULT_MOMENTUM])
     parser.add_argument(
-        "--batch-norm",
+        "--batch_norm",
         nargs="+",
         type=int,
         default=[DEFAULT_BATCH_NORM],
@@ -41,7 +46,7 @@ def main():
     parser.add_argument("--dropout", nargs="+", type=float, default=[DEFAULT_DROPOUT])
     parser.add_argument("--units", nargs="+", type=int, default=[DEFAULT_UNIT])
     parser.add_argument(
-        "--hidden-layers", nargs="+", type=int, default=[DEFAULT_HIDDEN_LAYERS]
+        "--hidden_layers", nargs="+", type=int, default=[DEFAULT_HIDDEN_LAYERS]
     )
     parser.add_argument(
         "--activation",
@@ -51,7 +56,7 @@ def main():
         choices=ALLOWED_ACTIVATIONS,
     )
     parser.add_argument(
-        "--output-activation",
+        "--output_activation",
         nargs="+",
         type=str,
         default=[DEFAULT_OUTPUT_ACTIVATION_FUNCTION],
@@ -59,14 +64,20 @@ def main():
     )
     parser.add_argument("--epochs", nargs="+", type=int, default=[DEFAULT_EPOCHS])
     parser.add_argument(
-        "--batch-size", nargs="+", type=int, default=[DEFAULT_BATCH_SIZE]
+        "--batch_size", nargs="+", type=int, default=[DEFAULT_BATCH_SIZE]
     )
     parser.add_argument(
         "--conv_modules", nargs="+", type=int, default=[DEFAULT_CONV_MODULES]
     )
     parser.add_argument("--filters", nargs="+", type=int, default=[DEFAULT_FILTERS])
     parser.add_argument(
-        "--kernel-size", nargs="+", type=int, default=[DEFAULT_KERNEL_SIZE]
+        "--kernel_size", nargs="+", type=int, default=[DEFAULT_KERNEL_SIZE]
+    )
+    parser.add_argument(
+        "--lstm_layers", nargs="+", type=int, default=[DEFAULT_LSTM_LAYERS]
+    )
+    parser.add_argument(
+        "--hidden_size", nargs="+", type=int, default=[DEFAULT_HIDDEN_SIZE]
     )
 
     args = parser.parse_args()
@@ -88,7 +99,7 @@ def main():
         "batch_size": args.batch_size,
     }
 
-    if args.model == "mlp" or args.model == "cnn":
+    if args.model == "mlp" or args.model == "cnn" or args.model == "lstm":
         params.update(
             {
                 "units": args.units,
@@ -104,6 +115,13 @@ def main():
                     "conv_modules": args.conv_modules,
                     "filters": args.filters,
                     "kernel_size": args.kernel_size,
+                }
+            )
+        if args.model == "lstm":
+            params.update(
+                {
+                    "lstm_layers": args.lstm_layers,
+                    "hidden_size": args.hidden_size
                 }
             )
 
