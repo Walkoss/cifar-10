@@ -33,7 +33,6 @@ class ResNetModel(BaseModel):
         outputs = tf.keras.layers.Dense(10, activation=params["output_activation"])(x)
 
         model = tf.keras.Model(inputs=inputs, outputs=outputs)
-        print(model.summary())
 
         model.compile(
             optimizer=tf.keras.optimizers.SGD(
