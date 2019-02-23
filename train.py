@@ -20,7 +20,7 @@ DEFAULT_BATCH_SIZE = 32
 DEFAULT_CONV_MODULES = 2
 DEFAULT_FILTERS = 32
 DEFAULT_KERNEL_SIZE = 3
-DEFAULT_DEPTH = 3
+DEFAULT_DEPTH = 20
 
 MODELS = {
     "linear": LinearModel,
@@ -96,7 +96,7 @@ def main():
         "batch_size": args.batch_size,
     }
 
-    if args.model in ["mlp", "cnn", "resnet"]:
+    if args.model == "mlp":
         params.update(
             {
                 "units": args.units,
@@ -106,17 +106,21 @@ def main():
             }
         )
 
-        if args.model == "cnn":
-            params.update(
-                {
-                    "conv_modules": args.conv_modules,
-                    "filters": args.filters,
-                    "kernel_size": args.kernel_size,
-                }
-            )
+    if args.model == "cnn":
+        params.update(
+            {
+                "units": args.units,
+                "hidden_layers": args.hidden_layers,
+                "dropout": args.dropout,
+                "batch_norm": args.batch_norm,
+                "conv_modules": args.conv_modules,
+                "filters": args.filters,
+                "kernel_size": args.kernel_size,
+            }
+        )
 
-        if args.model == "resnet":
-            params.update({"depth": args.depth})
+    if args.model == "resnet":
+        params.update({"filters": args.filters, "depth": args.depth})
 
     ta.Scan(
         x=x_train,

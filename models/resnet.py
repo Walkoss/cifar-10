@@ -39,7 +39,7 @@ class ResNetModel(BaseModel):
     def variant_default(cls, x_train, y_train, x_val, y_val, params):
         if (params["depth"] - 2) % 6 != 0:
             raise ValueError("depth should be 6n+2 (eg 20, 32, 44 in [a])")
-        num_filters = 16
+        num_filters = params["filters"]
         num_res_blocks = int((params["depth"] - 2) / 6)
 
         inputs = Input(shape=x_train.shape[1:])
