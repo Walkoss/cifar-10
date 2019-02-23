@@ -20,7 +20,7 @@ DEFAULT_BATCH_SIZE = 32
 DEFAULT_CONV_MODULES = 2
 DEFAULT_FILTERS = 32
 DEFAULT_KERNEL_SIZE = 3
-DEFAULT_DEPTH = 20
+DEFAULT_RESIDUAL_BLOCKS = 3
 
 MODELS = {
     "linear": LinearModel,
@@ -75,7 +75,9 @@ def main():
     parser.add_argument(
         "--kernel-size", nargs="+", type=int, default=[DEFAULT_KERNEL_SIZE]
     )
-    parser.add_argument("--depth", nargs="+", type=int, default=[DEFAULT_DEPTH])
+    parser.add_argument(
+        "--residual-blocks", nargs="+", type=int, default=[DEFAULT_RESIDUAL_BLOCKS]
+    )
 
     args = parser.parse_args()
 
@@ -120,7 +122,14 @@ def main():
         )
 
     if args.model == "resnet":
-        params.update({"filters": args.filters, "depth": args.depth})
+        params.update(
+            {
+                "filters": args.filters,
+                "kernel_size": args.kernel_size,
+                "residual_blocks": args.residual_blocks,
+                "batch_norm": args.batch_norm,
+            }
+        )
 
     ta.Scan(
         x=x_train,
