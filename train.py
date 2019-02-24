@@ -121,16 +121,6 @@ def main():
             }
         )
 
-    if args.model == "resnet":
-        params.update(
-            {
-                "filters": args.filters,
-                "kernel_size": args.kernel_size,
-                "residual_blocks": args.residual_blocks,
-                "batch_norm": args.batch_norm,
-            }
-        )
-
     ta.Scan(
         x=x_train,
         y=y_train,

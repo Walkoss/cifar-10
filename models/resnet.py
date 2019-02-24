@@ -8,10 +8,9 @@ from models import BaseModel
 class ResNetModel(BaseModel):
     @classmethod
     def variant_default(cls, x_train, y_train, x_val, y_val, params):
+        input_tensor = Input(shape=x_train.shape[1:])
         base_model = tf.keras.applications.ResNet50(
-            weights="imagenet",
-            include_top=False,
-            input_tensor=Input(shape=x_train.shape[1:]),
+            weights="imagenet", include_top=False, input_tensor=input_tensor
         )
         x = tf.keras.layers.GlobalAveragePooling2D()(base_model.output)
         outputs = tf.keras.layers.Dense(10, activation=params["output_activation"])(x)
