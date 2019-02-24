@@ -92,35 +92,33 @@ def main():
         "lr": args.lr,
         "momentum": args.momentum,
         "activation": args.activation,
-        "output-activation": args.output_activation,
+        "output_activation": args.output_activation,
         "epochs": args.epochs,
-        "batch-size": args.batch_size,
+        "batch_size": args.batch_size,
     }
 
     if args.model == "mlp" or args.model == "cnn" or args.model == "lstm":
         params.update(
             {
                 "units": args.units,
-                "hidden-layers": args.hidden_layers,
+                "hidden_layers": args.hidden_layers,
                 "dropout": args.dropout,
-                "batch-norm": args.batch_norm,
+                "batch_norm": args.batch_norm,
             }
         )
 
         if args.model == "cnn":
             params.update(
                 {
-                    "conv-modules": args.conv_modules,
+                    "conv_modules": args.conv_modules,
                     "filters": args.filters,
-                    "kernel-size": args.kernel_size,
+                    "kernel_size": args.kernel_size,
                 }
             )
+
         if args.model == "lstm":
             params.update(
-                {
-                    "lstm-layers": args.lstm_layers,
-                    "hidden-size": args.hidden_size
-                }
+                {"lstm_layers": args.lstm_layers, "hidden_size": args.hidden_size}
             )
 
     ta.Scan(

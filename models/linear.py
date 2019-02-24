@@ -10,7 +10,7 @@ class LinearModel(BaseModel):
         model = tf.keras.models.Sequential(
             [
                 tf.keras.layers.Flatten(input_shape=x_train.shape[1:]),
-                tf.keras.layers.Dense(10, activation=params["output-activation"]),
+                tf.keras.layers.Dense(10, activation=params["output_activation"]),
             ]
         )
 
@@ -27,7 +27,7 @@ class LinearModel(BaseModel):
             y_train,
             validation_data=(x_val, y_val),
             epochs=params["epochs"],
-            batch_size=params["batch-size"],
+            batch_size=params["batch_size"],
             verbose=1,
             callbacks=[
                 tf.keras.callbacks.TensorBoard(

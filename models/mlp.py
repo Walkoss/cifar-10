@@ -10,12 +10,12 @@ class MLPModel(BaseModel):
         model = tf.keras.models.Sequential()
         model.add(tf.keras.layers.Flatten(input_shape=x_train.shape[1:]))
 
-        for i in range(params["hidden-layers"]):
+        for i in range(params["hidden_layers"]):
             model.add(
                 tf.keras.layers.Dense(params["units"], activation=params["activation"])
             )
 
-            if params["batch-norm"] > 0:
+            if params["batch_norm"] > 0:
                 model.add(tf.keras.layers.BatchNormalization())
 
             if params["dropout"] > 0:
@@ -36,7 +36,7 @@ class MLPModel(BaseModel):
             y_train,
             validation_data=(x_val, y_val),
             epochs=params["epochs"],
-            batch_size=params["batch-size"],
+            batch_size=params["batch_size"],
             verbose=1,
             callbacks=[
                 tf.keras.callbacks.TensorBoard(
