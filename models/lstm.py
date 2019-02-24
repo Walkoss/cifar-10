@@ -38,6 +38,14 @@ class LSTMModel(BaseModel):
             epochs=params["epochs"],
             batch_size=params["batch-size"],
             verbose=1,
+            callbacks=[
+                tf.keras.callbacks.TensorBoard(
+                    "./lstm-logs/"
+                    + "lstm/"
+                    + "-".join("=".join((str(k), str(v))) for k, v in params.items())
+                    + "-ts={}".format(str(time.time()))
+                )
+            ],
         )
 
         return history, model
