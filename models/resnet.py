@@ -13,7 +13,7 @@ class ResNetModel(BaseModel):
     def variant_resnet50(cls, x_train, y_train, x_val, y_val, params):
         model = tf.keras.applications.resnet50.ResNet50(
             include_top=True,
-            weights="imagenet",
+            weights=None,
             input_shape=x_train.shape[1:],
             classes=10,
         )
