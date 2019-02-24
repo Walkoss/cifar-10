@@ -188,7 +188,7 @@ class ResNetModel(BaseModel):
             input_shape=x_train.shape[1:],
             block="basic",
             repetitions=[2, 2, 2, 2],
-            dropout=params["dropout"] > 0,
+            dropout=params["dropout"],
         )
 
         model.compile(
@@ -224,7 +224,7 @@ class ResNetModel(BaseModel):
             input_shape=x_train.shape[1:],
             block="basic",
             repetitions=[3, 4, 6, 3],
-            dropout=params["dropout"] > 0,
+            dropout=params["dropout"],
         )
 
         model.compile(
