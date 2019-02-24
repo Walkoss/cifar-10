@@ -121,6 +121,9 @@ def main():
             }
         )
 
+    if args.model == "resnet":
+        params.update({"dropout": args.dropout})
+
     ta.Scan(
         x=x_train,
         y=y_train,
