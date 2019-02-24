@@ -209,7 +209,7 @@ class ResNetModel(BaseModel):
             callbacks=[
                 tf.keras.callbacks.TensorBoard(
                     "./logs/"
-                    + "resnet50/"
+                    + "resnet18/"
                     + "-".join("=".join((str(k), str(v))) for k, v in params.items())
                     + "-ts={}".format(str(time.time()))
                 )
@@ -245,7 +245,7 @@ class ResNetModel(BaseModel):
             callbacks=[
                 tf.keras.callbacks.TensorBoard(
                     "./logs/"
-                    + "resnet50/"
+                    + "resnet34/"
                     + "-".join("=".join((str(k), str(v))) for k, v in params.items())
                     + "-ts={}".format(str(time.time()))
                 )
