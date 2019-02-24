@@ -16,7 +16,10 @@ class ResNetModel(BaseModel):
         )
         x = base_model.output
         x = tf.keras.layers.GlobalAveragePooling2D()(x)
-        x = tf.keras.layers.Dense(512, activation="relu")(x)
+
+        for i in range(params["hidden_layers"]):
+            x = tf.keras.layers.Dense(params["units"], activation=params["activation"])(x)
+
         output = tf.keras.layers.Dense(10, activation="softmax")(x)
         model = tf.keras.Model(inputs=base_model.input, outputs=output)
 

@@ -122,7 +122,7 @@ def main():
         )
 
     if args.model == "resnet":
-        params.update({"dropout": args.dropout})
+        params.update({"hidden_layers": args.hidden_layers, "units": args.units})
 
     ta.Scan(
         x=x_train,
