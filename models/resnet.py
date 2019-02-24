@@ -8,31 +8,17 @@ from models import BaseModel
 class ResNetModel(BaseModel):
     @classmethod
     def variant_default(cls, x_train, y_train, x_val, y_val, params):
-        inputs = Input(shape=x_train.shape[1:])
-        x = tf.keras.layers.Conv2D(
-            params["filters"],
-            (params["kernel_size"], params["kernel_size"]),
-            padding="same",
-        )(inputs)
-        if params["batch_norm"] > 0:
-            x = tf.keras.layers.BatchNormalization()(x)
-        x = tf.keras.layers.Activation(activation=params["activation"])(x)
-
-        for i in range(params["residual_blocks"]):
-            x1 = tf.keras.layers.Conv2D(
-                params["filters"],
-                (params["kernel_size"], params["kernel_size"]),
-                padding="same",
-            )(x)
-            if params["batch_norm"] > 0:
-                x = tf.keras.layers.BatchNormalization()(x)
-            x = tf.keras.layers.Activation(activation=params["activation"])(x)
-            x = tf.keras.layers.Add()([x, x1])
-
-        x = tf.keras.layers.Flatten()(x)
+        base_model = tf.keras.applications.ResNet50(
+            weights="imagenet",
+            include_top=False,
+            input_tensor=Input(shape=x_train.shape[1:]),
+        )
+        x = tf.keras.layers.GlobalAveragePooling2D()(base_model.output)
         outputs = tf.keras.layers.Dense(10, activation=params["output_activation"])(x)
+        model = tf.keras.Model(inputs=base_model.input, outputs=outputs)
 
-        model = tf.keras.Model(inputs=inputs, outputs=outputs)
+        for layer in base_model.layers:
+            layer.trainable = False
 
         model.compile(
             optimizer=tf.keras.optimizers.SGD(
@@ -52,7 +38,7 @@ class ResNetModel(BaseModel):
             callbacks=[
                 tf.keras.callbacks.TensorBoard(
                     "./logs/"
-                    + "resnet_default/"
+                    + "resnet50/"
                     + "-".join("=".join((str(k), str(v))) for k, v in params.items())
                     + "-ts={}".format(str(time.time()))
                 )
