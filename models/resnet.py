@@ -10,12 +10,49 @@ class ResNetModel(BaseModel):
         return cls.variant_resnet50(x_train, y_train, x_val, y_val, params)
 
     @classmethod
+    def variant_resnet50_weights_imagenet(cls, x_train, y_train, x_val, y_val, params):
+        base_model = tf.keras.applications.resnet50.ResNet50(
+            include_top=False,
+            input_shape=x_train.shape[1:],
+            pooling="avg",
+            weights="imagenet",
+        )
+
+        output = tf.layers.Dense(10, activation="softmax")(base_model.output)
+
+        model = tf.keras.Model(inputs=base_model.input, outputs=output)
+
+        model.compile(
+            optimizer=tf.keras.optimizers.SGD(
+                lr=params["lr"], momentum=params["momentum"]
+            ),
+            loss="sparse_categorical_crossentropy",
+            metrics=["accuracy"],
+        )
+
+        history = model.fit(
+            x_train,
+            y_train,
+            validation_data=(x_val, y_val),
+            epochs=params["epochs"],
+            batch_size=params["batch_size"],
+            verbose=1,
+            callbacks=[
+                tf.keras.callbacks.TensorBoard(
+                    "./logs/"
+                    + "resnet50_weights_imagenet/"
+                    + "-".join("=".join((str(k), str(v))) for k, v in params.items())
+                    + "-ts={}".format(str(time.time()))
+                )
+            ],
+        )
+
+        return history, model
+
+    @classmethod
     def variant_resnet50(cls, x_train, y_train, x_val, y_val, params):
         model = tf.keras.applications.resnet50.ResNet50(
-            include_top=True,
-            weights=None,
-            input_shape=x_train.shape[1:],
-            classes=10,
+            include_top=True, weights=None, input_shape=x_train.shape[1:], classes=10
         )
 
         model = tf.keras.Model(inputs=model.input, outputs=model.output)
