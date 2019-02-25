@@ -4,6 +4,7 @@ import tensorflow as tf
 
 from models.cnn import CNNModel
 from models.linear import LinearModel
+from models.lstm import LSTMModel
 from models.mlp import MLPModel
 from models.resnet import ResNetModel
 
@@ -20,8 +21,11 @@ DEFAULT_BATCH_SIZE = 32
 DEFAULT_CONV_MODULES = 2
 DEFAULT_FILTERS = 32
 DEFAULT_KERNEL_SIZE = 3
+DEFAULT_LSTM_LAYERS = 2
+DEFAULT_HIDDEN_SIZE = 32
 DEFAULT_RESIDUAL_BLOCKS = 3
 
+MODELS = {"linear": LinearModel, "mlp": MLPModel, "cnn": CNNModel, "lstm": LSTMModel}
 MODELS = {
     "linear": LinearModel,
     "mlp": MLPModel,
@@ -69,11 +73,17 @@ def main():
         "--batch-size", nargs="+", type=int, default=[DEFAULT_BATCH_SIZE]
     )
     parser.add_argument(
-        "--conv_modules", nargs="+", type=int, default=[DEFAULT_CONV_MODULES]
+        "--conv-modules", nargs="+", type=int, default=[DEFAULT_CONV_MODULES]
     )
     parser.add_argument("--filters", nargs="+", type=int, default=[DEFAULT_FILTERS])
     parser.add_argument(
         "--kernel-size", nargs="+", type=int, default=[DEFAULT_KERNEL_SIZE]
+    )
+    parser.add_argument(
+        "--lstm-layers", nargs="+", type=int, default=[DEFAULT_LSTM_LAYERS]
+    )
+    parser.add_argument(
+        "--hidden-size", nargs="+", type=int, default=[DEFAULT_HIDDEN_SIZE]
     )
     parser.add_argument(
         "--residual-blocks", nargs="+", type=int, default=[DEFAULT_RESIDUAL_BLOCKS]
@@ -99,6 +109,7 @@ def main():
     }
 
     if args.model == "mlp":
+    if args.model == "mlp" or args.model == "cnn" or args.model == "lstm":
         params.update(
             {
                 "units": args.units,
@@ -120,6 +131,11 @@ def main():
                 "kernel_size": args.kernel_size,
             }
         )
+
+        if args.model == "lstm":
+            params.update(
+                {"lstm_layers": args.lstm_layers, "hidden_size": args.hidden_size}
+            )
 
     if args.model == "resnet":
         params.update({"hidden_layers": args.hidden_layers, "units": args.units})
