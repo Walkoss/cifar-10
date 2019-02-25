@@ -25,12 +25,12 @@ DEFAULT_LSTM_LAYERS = 2
 DEFAULT_HIDDEN_SIZE = 32
 DEFAULT_RESIDUAL_BLOCKS = 3
 
-MODELS = {"linear": LinearModel, "mlp": MLPModel, "cnn": CNNModel, "lstm": LSTMModel}
 MODELS = {
     "linear": LinearModel,
     "mlp": MLPModel,
     "cnn": CNNModel,
     "resnet": ResNetModel,
+    "lstm": LSTMModel,
 }
 ALLOWED_ACTIVATIONS = ["softmax", "sigmoid", "tanh", "relu"]
 
@@ -108,8 +108,7 @@ def main():
         "batch_size": args.batch_size,
     }
 
-    if args.model == "mlp":
-    if args.model == "mlp" or args.model == "cnn" or args.model == "lstm":
+    if args.model in ["cnn", "lstm", "mlp", "resnet"]:
         params.update(
             {
                 "units": args.units,
@@ -119,26 +118,26 @@ def main():
             }
         )
 
-    if args.model == "cnn":
-        params.update(
-            {
-                "units": args.units,
-                "hidden_layers": args.hidden_layers,
-                "dropout": args.dropout,
-                "batch_norm": args.batch_norm,
-                "conv_modules": args.conv_modules,
-                "filters": args.filters,
-                "kernel_size": args.kernel_size,
-            }
-        )
+        if args.model == "cnn":
+            params.update(
+                {
+                    "units": args.units,
+                    "hidden_layers": args.hidden_layers,
+                    "dropout": args.dropout,
+                    "batch_norm": args.batch_norm,
+                    "conv_modules": args.conv_modules,
+                    "filters": args.filters,
+                    "kernel_size": args.kernel_size,
+                }
+            )
 
         if args.model == "lstm":
             params.update(
                 {"lstm_layers": args.lstm_layers, "hidden_size": args.hidden_size}
             )
 
-    if args.model == "resnet":
-        params.update({"hidden_layers": args.hidden_layers, "units": args.units})
+        if args.model == "resnet":
+            params.update({"hidden_layers": args.hidden_layers, "units": args.units})
 
     ta.Scan(
         x=x_train,
