@@ -121,10 +121,6 @@ def main():
         if args.model == "cnn":
             params.update(
                 {
-                    "units": args.units,
-                    "hidden_layers": args.hidden_layers,
-                    "dropout": args.dropout,
-                    "batch_norm": args.batch_norm,
                     "conv_modules": args.conv_modules,
                     "filters": args.filters,
                     "kernel_size": args.kernel_size,
