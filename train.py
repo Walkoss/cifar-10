@@ -4,6 +4,7 @@ import tensorflow as tf
 
 from models.cnn import CNNModel
 from models.linear import LinearModel
+from models.lstm import LSTMModel
 from models.mlp import MLPModel
 
 DEFAULT_LEARNING_RATE = 0.01
@@ -19,8 +20,10 @@ DEFAULT_BATCH_SIZE = 32
 DEFAULT_CONV_MODULES = 2
 DEFAULT_FILTERS = 32
 DEFAULT_KERNEL_SIZE = 3
+DEFAULT_LSTM_LAYERS = 2
+DEFAULT_HIDDEN_SIZE = 32
 
-MODELS = {"linear": LinearModel, "mlp": MLPModel, "cnn": CNNModel}
+MODELS = {"linear": LinearModel, "mlp": MLPModel, "cnn": CNNModel, "lstm": LSTMModel}
 ALLOWED_ACTIVATIONS = ["softmax", "sigmoid", "tanh", "relu"]
 
 
@@ -62,11 +65,17 @@ def main():
         "--batch-size", nargs="+", type=int, default=[DEFAULT_BATCH_SIZE]
     )
     parser.add_argument(
-        "--conv_modules", nargs="+", type=int, default=[DEFAULT_CONV_MODULES]
+        "--conv-modules", nargs="+", type=int, default=[DEFAULT_CONV_MODULES]
     )
     parser.add_argument("--filters", nargs="+", type=int, default=[DEFAULT_FILTERS])
     parser.add_argument(
         "--kernel-size", nargs="+", type=int, default=[DEFAULT_KERNEL_SIZE]
+    )
+    parser.add_argument(
+        "--lstm-layers", nargs="+", type=int, default=[DEFAULT_LSTM_LAYERS]
+    )
+    parser.add_argument(
+        "--hidden-size", nargs="+", type=int, default=[DEFAULT_HIDDEN_SIZE]
     )
 
     args = parser.parse_args()
@@ -88,7 +97,7 @@ def main():
         "batch_size": args.batch_size,
     }
 
-    if args.model == "mlp" or args.model == "cnn":
+    if args.model == "mlp" or args.model == "cnn" or args.model == "lstm":
         params.update(
             {
                 "units": args.units,
@@ -105,6 +114,11 @@ def main():
                     "filters": args.filters,
                     "kernel_size": args.kernel_size,
                 }
+            )
+
+        if args.model == "lstm":
+            params.update(
+                {"lstm_layers": args.lstm_layers, "hidden_size": args.hidden_size}
             )
 
     ta.Scan(
