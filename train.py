@@ -6,6 +6,7 @@ from models.cnn import CNNModel
 from models.linear import LinearModel
 from models.lstm import LSTMModel
 from models.mlp import MLPModel
+from models.resnet import ResNetModel
 
 DEFAULT_LEARNING_RATE = 0.01
 DEFAULT_MOMENTUM = 0.9
@@ -22,8 +23,15 @@ DEFAULT_FILTERS = 32
 DEFAULT_KERNEL_SIZE = 3
 DEFAULT_LSTM_LAYERS = 2
 DEFAULT_HIDDEN_SIZE = 32
+DEFAULT_RESIDUAL_BLOCKS = 3
 
-MODELS = {"linear": LinearModel, "mlp": MLPModel, "cnn": CNNModel, "lstm": LSTMModel}
+MODELS = {
+    "linear": LinearModel,
+    "mlp": MLPModel,
+    "cnn": CNNModel,
+    "resnet": ResNetModel,
+    "lstm": LSTMModel,
+}
 ALLOWED_ACTIVATIONS = ["softmax", "sigmoid", "tanh", "relu"]
 
 
@@ -77,6 +85,9 @@ def main():
     parser.add_argument(
         "--hidden-size", nargs="+", type=int, default=[DEFAULT_HIDDEN_SIZE]
     )
+    parser.add_argument(
+        "--residual-blocks", nargs="+", type=int, default=[DEFAULT_RESIDUAL_BLOCKS]
+    )
 
     args = parser.parse_args()
 
@@ -97,7 +108,7 @@ def main():
         "batch_size": args.batch_size,
     }
 
-    if args.model == "mlp" or args.model == "cnn" or args.model == "lstm":
+    if args.model in ["cnn", "lstm", "mlp", "resnet"]:
         params.update(
             {
                 "units": args.units,
@@ -120,6 +131,9 @@ def main():
             params.update(
                 {"lstm_layers": args.lstm_layers, "hidden_size": args.hidden_size}
             )
+
+        if args.model == "resnet":
+            params.update({"hidden_layers": args.hidden_layers, "units": args.units})
 
     ta.Scan(
         x=x_train,
